@@ -114,6 +114,7 @@ jobs:
           -configuration Release \
           -sdk iphoneos \
           -archivePath $PWD/build/RN74Example.xcarchive \
+           CODE_SIGNING_ALLOWED=NO \
           archive
 
         xcodebuild -exportArchive \
