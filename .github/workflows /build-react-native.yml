@@ -38,9 +38,9 @@ jobs:
         run: |
           rm -rf node_modules
           yarn cache clean
-          # yarn install --frozen-lockfile
+          yarn install --frozen-lockfile
           # OR, if you use npm:
-          npm install
+          # npm install
 
       
 
