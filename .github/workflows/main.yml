@@ -42,6 +42,23 @@ jobs:
         yarn install --immutable
         cd ios
         yarn pod-install
+        
+    # 🧹 Step 4: Clean up caches (Pods, DerivedData, build, node_modules)
+    - name: Clean up everything
+      run: |
+          echo "🧹 Cleaning old builds, caches, and pods..."
+          rm -rf ~/Library/Developer/Xcode/DerivedData
+          rm -rf ios/build
+          rm -rf ios/Pods
+          rm -rf node_modules
+          npm install
+          cd ios && pod deintegrate && pod install --repo-update && cd ..
+
+      # ⚙️ Step 5: Ensure Hermes scripts are executable
+    - name: Fix Hermes script permissions
+      run: |
+          echo "🧩 Ensuring all Hermes-related scripts are executable"
+          find ios/Pods -type f -name "Script-*.sh" -exec chmod +x {} \;
 
     - name: Build iOS App (Unsigned)
       run: |
