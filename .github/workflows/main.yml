@@ -43,23 +43,46 @@ jobs:
         cd ios
         yarn pod-install
 
-    # Build unsigned IPA
     - name: Build iOS App (Unsigned)
       run: |
-        cd ios
-        xcodebuild \
-          -workspace RN74Example.xcworkspace \
-          -scheme RN74Example \
-          -configuration Release \
-          -sdk iphoneos \
-          -archivePath $PWD/build/RN74Example.xcarchive \
-           CODE_SIGNING_ALLOWED=NO \
-           archive | tee xcodebuild.log | xcpretty || cat xcodebuild.log
+          cd ios
 
-        xcodebuild -exportArchive \
-          -archivePath $PWD/build/RN74Example.xcarchive \
-          -exportPath $PWD/build/ \
-          -exportOptionsPlist ExportOptions.plist
+          # 🧩 Create a minimal ExportOptions.plist
+          cat > ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>ad-hoc</string>
+            <key>compileBitcode</key>
+            <false/>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>stripSwiftSymbols</key>
+            <true/>
+            <key>teamID</key>
+            <string></string>
+          </dict>
+          </plist>
+          EOF
+
+          # 🏗️ Build and archive
+          xcodebuild \
+            -workspace RN74Example.xcworkspace \
+            -scheme RN74Example \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath $PWD/build/RN74Example.xcarchive \
+            DEVELOPMENT_TEAM="" \
+            CODE_SIGN_IDENTITY="" \
+            archive
+
+          # 📦 Export unsigned IPA
+          xcodebuild -exportArchive \
+            -archivePath $PWD/build/RN74Example.xcarchive \
+            -exportPath $PWD/build/ \
+            -exportOptionsPlist ExportOptions.plist
 
     # Upload IPA
     - name: Upload iOS IPA
