@@ -76,7 +76,7 @@ jobs:
             -archivePath $PWD/build/RN74Example.xcarchive \
             DEVELOPMENT_TEAM="" \
             CODE_SIGN_IDENTITY="" \
-            archive
+            archive | tee xcodebuild.log | xcpretty || cat xcodebuild.log
 
           # 📦 Export unsigned IPA
           xcodebuild -exportArchive \
