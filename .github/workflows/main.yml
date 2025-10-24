@@ -216,6 +216,7 @@ jobs:
           xcodebuild -exportArchive \
             -archivePath "$ARCHIVE_PATH" \
             -exportPath "$PWD/build" \
+            CODE_SIGNING_ALLOWED=NO \
             -exportOptionsPlist ExportOptions.plist | xcpretty
 
           echo "IPA files:"
