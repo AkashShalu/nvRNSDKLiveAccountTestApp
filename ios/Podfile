@@ -12,6 +12,9 @@ linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
   use_frameworks! :linkage => linkage.to_sym
+else
+  # Use static frameworks by default for faster CI build
+  use_frameworks! :linkage => :static
 end
 
 target 'nvRNSDKLiveAccountTestApp' do
@@ -37,6 +40,12 @@ target 'nvRNSDKLiveAccountTestApp' do
         # Prevent building arm64 for simulator (works for Intel & Apple Silicon Macs)
         config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
         #  config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = "NO"
+        # ✅ Disable code signing for CI builds to prevent hang
+        if ENV['CI'] == "true"
+          config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+          config.build_settings['CODE_SIGNING_REQUIRED'] = 'NO'
+          config.build_settings['EXPANDED_CODE_SIGN_IDENTITY'] = ''
+        end
       end
     end
   end
