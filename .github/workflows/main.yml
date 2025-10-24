@@ -61,7 +61,6 @@ jobs:
       # -------------------------
       - name: 📦 Install JS dependencies
         run: |
-          cd nvRNSDKLiveAccountTestApp
           npm ci
 
       # -------------------------
