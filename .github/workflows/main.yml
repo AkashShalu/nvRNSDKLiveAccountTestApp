@@ -148,8 +148,8 @@ jobs:
           WORKSPACE: nvRNSDKLiveAccountTestApp.xcworkspace
           CONFIGURATION: Release
           DEVELOPMENT_TEAM: 4JW4924F8P
-          PROFILE_APP_NAME: "nvRNLiveAcTestApp Main Target Dist AppStoreProfile"
-          PROFILE_EXT_NAME: "nvRNLiveAcTestApp Ser Ext Target Dist AppStoreProf"
+          PROFILE_APP_NAME: "nvRNLiveAcTestAppMainTargetReleaseDistribProfile"
+          PROFILE_EXT_NAME: "nvRNLiveAcTestAppServicExtTargetReleaseDistProfile"
         run: |
           set -e
           cd ios
@@ -165,7 +165,7 @@ jobs:
           <plist version="1.0">
           <dict>
             <key>method</key>
-            <string>ad-hoc</string>
+            <string>app-store</string>
             <key>teamID</key>
             <string>${DEVELOPMENT_TEAM}</string>
             <key>signingStyle</key>
