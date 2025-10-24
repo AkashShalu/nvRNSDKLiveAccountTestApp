@@ -61,7 +61,7 @@ jobs:
       # -------------------------
       - name: 📦 Install JS dependencies
         run: |
-          npm ci
+          npm ci --legacy-peer-deps
 
       # -------------------------
       # Prepare iOS dependencies (Pods + Hermes Fix)
