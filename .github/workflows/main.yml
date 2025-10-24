@@ -174,6 +174,7 @@ jobs:
             <key>signingStyle</key>
             <string>manual</string>
             <key>compileBitcode</key>
+            <false/>
             <key>signingCertificate</key>
             <string>Apple Distribution</string>
             <false/>
