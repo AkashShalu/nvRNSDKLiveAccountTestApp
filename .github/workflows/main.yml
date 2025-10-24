@@ -29,44 +29,61 @@ jobs:
       - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: 'yarn'
+          node-version: 20
 
-      - name: 🧰 Enable Corepack and Yarn 3
+      # -------------------------
+      # Cache npm & node_modules
+      # -------------------------
+      - name: 📦 Cache node_modules & npm
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+            nvRNSDKLiveAccountTestApp/node_modules
+          key: node-${{ runner.os }}-npm-${{ hashFiles('nvRNSDKLiveAccountTestApp/package-lock.json') }}
+          restore-keys: |
+            node-${{ runner.os }}-npm-
+
+      # -------------------------
+      # Debug: Print current directory and files
+      # -------------------------
+      - name: 📂 Print current directory
         run: |
-          corepack enable
-          corepack prepare yarn@3.6.4 --activate
-
-      - name: 🧱 Configure Yarn Linker
-        run: yarn config set nodeLinker node-modules
-
-      # -------------------------
-      # 3️⃣ Cache restore
-      # -------------------------
-     
+          echo "Current working directory:"
+          pwd
+          echo "Listing files:"
+          ls -la
+          echo "Listing root contents:"
+          ls -la ..
 
       # -------------------------
-      # 4️⃣ Clean & Install Dependencies
+      # Install JS dependencies
       # -------------------------
-      - name: 🧹 Clean old build & caches
-        run: |
-          rm -rf ~/Library/Developer/Xcode/DerivedData ios/build ios/Pods node_modules
-          yarn cache clean
-
       - name: 📦 Install JS dependencies
-        run: yarn install --immutable
-
-      - name: 📦 Install iOS Pods
         run: |
+          cd nvRNSDKLiveAccountTestApp
+          npm ci
+
+      # -------------------------
+      # Prepare iOS dependencies (Pods + Hermes Fix)
+      # -------------------------
+      - name: Prepare iOS dependencies
+        run: |
+          echo "🧹 Cleaning old caches and builds..."
+          rm -rf ~/Library/Developer/Xcode/DerivedData ios/build ios/Pods
+
+          echo "📦 Installing iOS Pods..."
           cd ios
-          yarn pod-install || (pod deintegrate && pod install --repo-update)
+          pod install --repo-update
+
+          echo "🧩 Fixing Hermes script permissions..."
+          find Pods -type f -name "Script-*.sh" -exec chmod +x {} \;
+
+          # CI-safe: Disable dependency analysis for RN bundle phase
+          sed -i '' 's/"basedOnDependencyAnalysis" = YES;/"basedOnDependencyAnalysis" = NO;/g' nvRNSDKLiveAccountTestApp.xcodeproj/project.pbxproj
           cd ..
-
-      - name: 🧩 Fix Hermes scripts permissions & RN dependency analysis
-        run: |
-          find ios/Pods -type f -name "Script-*.sh" -exec chmod +x {} \;
-          sed -i '' 's/"basedOnDependencyAnalysis" = YES;/"basedOnDependencyAnalysis" = NO;/g' ios/nvRNSDKLiveAccountTestApp.xcodeproj/project.pbxproj
-
+ 
+   
       # -------------------------
       # 5️⃣ Decrypt signing assets
       # -------------------------
