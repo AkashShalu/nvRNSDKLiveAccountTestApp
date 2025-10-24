@@ -43,25 +43,7 @@ jobs:
       # -------------------------
       # 3️⃣ Cache restore
       # -------------------------
-      - name: 📦 Cache node_modules & npm
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: node-${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            node-${{ runner.os }}-yarn-
-
-      - name: 📦 Cache CocoaPods
-        uses: actions/cache@v3
-        with:
-          path: |
-            ios/Pods
-            ios/Podfile.lock
-          key: cocoapods-${{ runner.os }}-${{ hashFiles('ios/Podfile.lock') }}
-          restore-keys: |
-            cocoapods-${{ runner.os }}-
+     
 
       # -------------------------
       # 4️⃣ Clean & Install Dependencies
@@ -94,9 +76,9 @@ jobs:
         run: |
           set -e
           mkdir -p ios/certs
-          openssl aes-256-cbc -k "$CERT_PASSWORD" -in ios/appleDistribution.p12.enc -out ios/certs/appleDistribution.p12 -d
-          openssl aes-256-cbc -k "$CERT_PASSWORD" -in ios/ad_hoc_main_Target.mobileprovision.enc -out ios/certs/ad_hoc_main_Target.mobileprovision -d
-          openssl aes-256-cbc -k "$CERT_PASSWORD" -in ios/ad_hoc_ext_Target.mobileprovision.enc -out ios/certs/ad_hoc_ext_Target.mobileprovision -d
+          openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/appleDistribution.p12.enc -out ios/certs/appleDistribution.p12 -d
+          openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/main_Target.mobileprovision.enc -out ios/certs/ad_hoc_main_Target.mobileprovision -d
+          openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/ext_Target.mobileprovision.enc -out ios/certs/ad_hoc_ext_Target.mobileprovision -d
 
       # -------------------------
       # 6️⃣ Keychain & certificate
