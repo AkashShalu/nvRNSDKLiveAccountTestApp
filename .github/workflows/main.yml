@@ -215,6 +215,10 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             archive | xcpretty
 
+            echo "Validating ExportOptions.plist"
+            plutil -lint ExportOptions.plist
+            cat ExportOptions.plist
+
           # Export signed IPA
             xcodebuild -exportArchive \
               -archivePath "$ARCHIVE_PATH" \
