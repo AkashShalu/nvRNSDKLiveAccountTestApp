@@ -230,6 +230,13 @@ jobs:
               -allowProvisioningUpdates \
               -verbose \
               | xcpretty
+
+            # Print the hidden Xcode export failure log:
+            echo "----- EXPORT DEBUG LOG -----"
+            LOG_FILE=$(find /var/folders -name "IDEDistributionStandard.log" 2>/dev/null | head -1)
+            echo "Log file: $LOG_FILE"
+            cat "$LOG_FILE" || echo "No export log found"
+            echo "--------------------------------"
             
             echo "IPA files:"
             ls -la build/*.ipa || true
