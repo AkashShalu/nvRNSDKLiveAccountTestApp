@@ -183,6 +183,10 @@ jobs:
               <key>com.notifyvisitors.rn.nvrnsdkliveaccounttestapp.NVRNPushServiceExt</key>
               <string>${PROFILE_EXT_NAME}</string>
             </dict>
+            <key>manageAppVersionAndBuildNumber</key>
+            <false/>
+            <key>generateAppStoreInformation</key>
+            <false/>
           </dict>
           </plist>
           EOF
