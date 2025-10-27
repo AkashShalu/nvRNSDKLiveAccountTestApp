@@ -213,7 +213,6 @@ jobs:
           export PROVISIONING_PROFILE_SPECIFIER_nvRNSDKLiveAccountTestApp="nvRNLiveAcTestAppMainTargetReleaseDistribProfile"
           export PROVISIONING_PROFILE_SPECIFIER_NVRNPushServiceExt="nvRNLiveAcTestAppServicExtTargetReleaseDistProfile"
 
-          
           xcodebuild -workspace "$WORKSPACE" \
             -scheme "$APP_SCHEME" \
             -configuration "$CONFIGURATION" \
@@ -223,7 +222,7 @@ jobs:
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="Apple Distribution" \
             -allowProvisioningUpdates \
-            archive 
+            archive | xcpretty
             
           # Export signed IPA (Ad-Hoc)
           echo "Exporting .ipa (Ad-Hoc)..."
