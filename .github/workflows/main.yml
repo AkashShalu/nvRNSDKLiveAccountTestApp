@@ -70,12 +70,16 @@ jobs:
           echo "📦 Installing iOS Pods..."
           cd ios
           pod install --repo-update
+          
           echo "🧩 Fixing Hermes script permissions..."
           find Pods -type f -name "Script-*.sh" -exec chmod +x {} \;
-          # CI-safe: Disable dependency analysis for RN bundle phase
-          sed -i '' 's/"basedOnDependencyAnalysis" = YES;/"basedOnDependencyAnalysis" = NO;/g' nvRNSDKLiveAccountTestApp.xcodeproj/project.pbxproj
+          
+          # ✅ Fix dependency analysis for both App + Pods to prevent archive failure
+          echo "🔧 Fixing dependency analysis in iOS projects..."
+          find . -name "project.pbxproj" -print0 | while IFS= read -r -d '' file; do
+            sed -i '' 's/"basedOnDependencyAnalysis" = YES;/"basedOnDependencyAnalysis" = NO;/g' "$file"
+          done 
           cd ..
- 
    
       # -------------------------
       # 5️⃣ Decrypt signing assets
@@ -182,6 +186,12 @@ jobs:
           # Clean previous builds
           echo "🧹 Cleaning previous build"
           xcodebuild clean -workspace "$WORKSPACE" -scheme "$APP_SCHEME" -configuration "$CONFIGURATION"
+          
+          # Fix CocoaPods build script issue for CI
+          echo "🔧 Fixing: basedOnDependencyAnalysis issue"
+          find . -name "project.pbxproj" -print0 | while IFS= read -r -d '' file; do
+            sed -i '' 's/"basedOnDependencyAnalysis" = YES;/"basedOnDependencyAnalysis" = NO;/g' "$file"
+          done
           
           # Archive
           echo "📦 Archiving app (CI optimized)"
