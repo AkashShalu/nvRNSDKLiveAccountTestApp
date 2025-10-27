@@ -11,9 +11,13 @@ jobs:
     name: Build iOS Release (Signed - AdHoc)
     runs-on: macos-latest
     env:
+      # RN / CI flags
       USE_HERMES: "1"
       RCT_NO_LAUNCH_PACKAGER: "true"
+      NO_FLIPPER: "1"
+      CI: "true"
 
+     
     steps:
       # -------------------------
       # 1️⃣ Checkout repo
