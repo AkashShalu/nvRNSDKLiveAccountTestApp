@@ -212,9 +212,10 @@ jobs:
             -sdk iphoneos \
             -archivePath "$ARCHIVE_PATH" \
             DEVELOPMENT_TEAM="${DEVELOPMENT_TEAM}" \
-            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_STYLE="Automatic" \
             CODE_SIGN_IDENTITY="Apple Distribution" \
             PROVISIONING_PROFILE_SPECIFIER="${PROFILE_APP_NAME}" \
+            -allowProvisioningUpdates \
             archive | xcpretty
             
             
