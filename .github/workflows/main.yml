@@ -220,7 +220,7 @@ jobs:
             "PROVISIONING_PROFILE_SPECIFIER=nvRNLiveAcTestAppMainTargetReleaseDistribProfile" \
             "PROVISIONING_PROFILE_SPECIFIER_NVRNPushServiceExt=nvRNLiveAcTestAppServicExtTargetReleaseDistProfile" \
             -allowProvisioningUpdates \
-            archive | xcpretty
+            archive 
             
           # Export signed IPA (Ad-Hoc)
           echo "Exporting .ipa (Ad-Hoc)..."
