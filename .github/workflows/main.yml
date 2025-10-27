@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-ios:
-    name: Build iOS Release (Signed)
+    name: Build iOS Release (Signed - AdHoc)
     runs-on: macos-latest
     env:
       USE_HERMES: "1"
@@ -87,8 +87,8 @@ jobs:
           set -e
           mkdir -p ios/certs
           openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/appleDistribution.p12.enc -out ios/certs/appleDistribution.p12 -d
-          openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/main_Target_release.mobileprovision.enc -out ios/certs/main_Target_release.mobileprovision -d
-          openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/ext_Target_release.mobileprovision.enc -out ios/certs/ext_Target_release.mobileprovision -d
+          openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/main_Target_ad_hoc.mobileprovision.enc -out ios/certs/main_Target_ad_hoc.mobileprovision -d
+          openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/ext_Target_ad_hoc.mobileprovision.enc -out ios/certs/ext_Target_ad_hoc.mobileprovision -d
       # -------------------------
       # 6️⃣ Keychain & certificate
       # -------------------------
@@ -110,8 +110,8 @@ jobs:
       - name: 📄 Install Provisioning Profiles
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp ios/certs/main_Target_release.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-          cp ios/certs/ext_Target_release.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          cp ios/certs/main_Target_ad_hoc.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          cp ios/certs/ext_Target_ad_hoc.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
       # -------------------------
       # 8️⃣ Bundle React Native JS
       # -------------------------
@@ -138,17 +138,13 @@ jobs:
           WORKSPACE: nvRNSDKLiveAccountTestApp.xcworkspace
           CONFIGURATION: Release
           DEVELOPMENT_TEAM: 4JW4924F8P
-          PROFILE_APP_NAME: "nvRNLiveAcTestAppMainTargetReleaseDistribProfile"
-          PROFILE_EXT_NAME: "nvRNLiveAcTestAppServicExtTargetReleaseDistProfile"
-          CI: "true"
-          NO_FLIPPER: "1"
-          RCT_NO_LAUNCH_PACKAGER: "true"
+          PROFILE_APP_NAME: "nvRNLiveAcTestAppMainTargetAdHocDistribProfile"
+          PROFILE_EXT_NAME: "nvRNLiveAcTestAppServExtTargetAdHocDistribProfile"
         run: |
           set -e
           cd ios
           mkdir -p build
-          # Fix dependency analysis
-          find . -name "project.pbxproj" -exec sed -i '' 's/"basedOnDependencyAnalysis" = YES;/"basedOnDependencyAnalysis" = NO;/g' {} \; || true
+          
           # ExportOptions.plist
           cat > ExportOptions.plist <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
@@ -157,7 +153,7 @@ jobs:
           <plist version="1.0">
           <dict>
             <key>method</key>
-            <string>app-store-connect</string>
+            <string>ad-hoc</string>
             <key>teamID</key>
             <string>4JW4924F8P</string>
             <key>signingStyle</key>
@@ -175,20 +171,23 @@ jobs:
             <key>provisioningProfiles</key>
             <dict>
               <key>com.notifyvisitors.rn.nvrnsdkliveaccounttestapp</key>
-              <string>nvRNLiveAcTestAppMainTargetReleaseDistribProfile</string>
+              <string>${PROFILE_APP_NAME}</string>
               <key>com.notifyvisitors.rn.nvrnsdkliveaccounttestapp.NVRNPushServiceExt</key>
-              <string>nvRNLiveAcTestAppServicExtTargetReleaseDistProfile</string>
+              <string>${PROFILE_EXT_NAME}</string>
             </dict>
           </dict>
           </plist>
           EOF
+          
           # Clean previous builds
           echo "🧹 Cleaning previous build"
           xcodebuild clean -workspace "$WORKSPACE" -scheme "$APP_SCHEME" -configuration "$CONFIGURATION"
+          
           # Archive
           echo "📦 Archiving app (CI optimized)"
           ARCHIVE_PATH="$PWD/build/${APP_SCHEME}.xcarchive"
-          set -o pipefail
+          
+          echo "Archiving..."
           xcodebuild -workspace "$WORKSPACE" \
             -scheme "$APP_SCHEME" \
             -configuration "$CONFIGURATION" \
@@ -198,14 +197,18 @@ jobs:
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="Apple Distribution" \
             PROVISIONING_PROFILE_SPECIFIER="${PROFILE_APP_NAME}" \
-            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGNING_REQUIRED=YES \
             archive | xcpretty
             
-          # Export signed IPA
+            
+          # Export signed IPA (Ad-Hoc)
+          echo "Exporting .ipa (Ad-Hoc)..."
           xcodebuild -exportArchive \
             -archivePath "$ARCHIVE_PATH" \
             -exportPath "$PWD/build" \
             -exportOptionsPlist ExportOptions.plist | xcpretty
+
           echo "IPA files:"
           ls -la build/*.ipa || true
           cd ..
