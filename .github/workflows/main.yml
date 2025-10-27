@@ -186,6 +186,10 @@ jobs:
           </dict>
           </plist>
           EOF
+
+          echo "===== ExportOptions.plist ====="
+          cat ExportOptions.plist
+          echo "==============================="
           
           # Clean previous builds
           echo "🧹 Cleaning previous build"
