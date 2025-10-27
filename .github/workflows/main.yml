@@ -216,7 +216,7 @@ jobs:
             CODE_SIGN_IDENTITY="Apple Distribution" \
             PROVISIONING_PROFILE_SPECIFIER="${PROFILE_APP_NAME}" \
             -allowProvisioningUpdates \
-            archive | xcpretty
+            archive 
             
             
           # Export signed IPA (Ad-Hoc)
