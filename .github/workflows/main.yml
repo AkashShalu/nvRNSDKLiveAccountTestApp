@@ -93,8 +93,8 @@ jobs:
           set -e
           mkdir -p ios/certs
           openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/appleDistribution.p12.enc -out ios/certs/appleDistribution.p12 -d
-          openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/main_Target_ad_hoc.mobileprovision.enc -out ios/certs/main_Target_ad_hoc.mobileprovision -d
-          openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/ext_Target_ad_hoc.mobileprovision.enc -out ios/certs/ext_Target_ad_hoc.mobileprovision -d
+          openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/main_Target_release.mobileprovision.enc -out ios/certs/main_Target_release.mobileprovision -d
+          openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/ext_Target_release.mobileprovision.enc -out ios/certs/ext_Target_release.mobileprovision -d
       # -------------------------
       # 6️⃣ Keychain & certificate
       # -------------------------
@@ -116,8 +116,8 @@ jobs:
       - name: 📄 Install Provisioning Profiles
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp ios/certs/main_Target_ad_hoc.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-          cp ios/certs/ext_Target_ad_hoc.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          cp ios/certs/main_Target_release.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          cp ios/certs/ext_Target_release.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
       # -------------------------
       # 8️⃣ Bundle React Native JS
       # -------------------------
