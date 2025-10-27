@@ -140,6 +140,9 @@ jobs:
           DEVELOPMENT_TEAM: 4JW4924F8P
           PROFILE_APP_NAME: "nvRNLiveAcTestAppMainTargetReleaseDistribProfile"
           PROFILE_EXT_NAME: "nvRNLiveAcTestAppServicExtTargetReleaseDistProfile"
+          CI: "true"
+          NO_FLIPPER: "1"
+          RCT_NO_LAUNCH_PACKAGER: "true"
         run: |
           set -e
           cd ios
@@ -149,36 +152,41 @@ jobs:
           # ExportOptions.plist
           cat > ExportOptions.plist <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" 
+            "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
           <dict>
             <key>method</key>
-            <string>app-store</string>
+            <string>app-store-connect</string>
             <key>teamID</key>
-            <string>${DEVELOPMENT_TEAM}</string>
+            <string>4JW4924F8P</string>
             <key>signingStyle</key>
             <string>manual</string>
             <key>compileBitcode</key>
             <false/>
+            <key>signingCertificate</key>
+            <string>Apple Distribution</string>
             <key>stripSwiftSymbols</key>
             <true/>
             <key>destination</key>
             <string>export</string>
             <key>thinning</key>
-            <string>&lt;none&gt;</string>
+            <string>none</string>
             <key>provisioningProfiles</key>
             <dict>
               <key>com.notifyvisitors.rn.nvrnsdkliveaccounttestapp</key>
-              <string>${PROFILE_APP_NAME}</string>
+              <string>nvRNLiveAcTestAppMainTargetReleaseDistribProfile</string>
               <key>com.notifyvisitors.rn.nvrnsdkliveaccounttestapp.NVRNPushServiceExt</key>
-              <string>${PROFILE_EXT_NAME}</string>
+              <string>nvRNLiveAcTestAppServicExtTargetReleaseDistProfile</string>
             </dict>
           </dict>
           </plist>
           EOF
           # Clean previous builds
+          echo "🧹 Cleaning previous build"
           xcodebuild clean -workspace "$WORKSPACE" -scheme "$APP_SCHEME" -configuration "$CONFIGURATION"
           # Archive
+          echo "📦 Archiving app (CI optimized)"
           ARCHIVE_PATH="$PWD/build/${APP_SCHEME}.xcarchive"
           set -o pipefail
           xcodebuild -workspace "$WORKSPACE" \
@@ -188,9 +196,11 @@ jobs:
             -archivePath "$ARCHIVE_PATH" \
             DEVELOPMENT_TEAM="${DEVELOPMENT_TEAM}" \
             CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="iPhone Distribution" \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            PROVISIONING_PROFILE_SPECIFIER="${PROFILE_APP_NAME}" \
+            CODE_SIGNING_ALLOWED=NO \
             archive | xcpretty
-         
+            
           # Export signed IPA
           xcodebuild -exportArchive \
             -archivePath "$ARCHIVE_PATH" \
@@ -199,7 +209,6 @@ jobs:
           echo "IPA files:"
           ls -la build/*.ipa || true
           cd ..
-          
       # -------------------------
       # 1️⃣1️⃣ Upload IPA Artifact
       # -------------------------
