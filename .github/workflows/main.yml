@@ -144,8 +144,8 @@ jobs:
           WORKSPACE: nvRNSDKLiveAccountTestApp.xcworkspace
           CONFIGURATION: Release
           DEVELOPMENT_TEAM: 4JW4924F8P
-          PROFILE_APP_NAME: "nvRNLiveAcTestAppMainTargetAdHocDistribProfile"
-          PROFILE_EXT_NAME: "nvRNLiveAcTestAppServExtTargetAdHocDistribProfile"
+          PROFILE_APP_NAME: "nvRNLiveAcTestAppMainTargetReleaseDistribProfile"
+          PROFILE_EXT_NAME: "nvRNLiveAcTestAppServicExtTargetReleaseDistProfile"
         run: |
           set -e
           cd ios
