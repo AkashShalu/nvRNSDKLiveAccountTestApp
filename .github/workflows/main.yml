@@ -163,7 +163,7 @@ jobs:
           <plist version="1.0">
           <dict>
             <key>method</key>
-            <string>release-testing</string>
+            <string>ad-hoc</string>
             <key>teamID</key>
             <string>4JW4924F8P</string>
             <key>signingStyle</key>
