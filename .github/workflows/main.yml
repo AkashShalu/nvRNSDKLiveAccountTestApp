@@ -212,6 +212,7 @@ jobs:
           # Export target-specific provisioning overrides
           export PROVISIONING_PROFILE_SPECIFIER_nvRNSDKLiveAccountTestApp="nvRNLiveAcTestAppMainTargetReleaseDistribProfile"
           export PROVISIONING_PROFILE_SPECIFIER_NVRNPushServiceExt="nvRNLiveAcTestAppServicExtTargetReleaseDistProfile"
+          export CODE_SIGNING_ALLOWED="NO"
 
           xcodebuild -workspace "$WORKSPACE" \
             -scheme "$APP_SCHEME" \
