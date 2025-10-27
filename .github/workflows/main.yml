@@ -163,7 +163,7 @@ jobs:
           <plist version="1.0">
           <dict>
             <key>method</key>
-            <string>ad-hoc</string>
+            <string>release-testing</string>
             <key>teamID</key>
             <string>4JW4924F8P</string>
             <key>signingStyle</key>
@@ -176,8 +176,6 @@ jobs:
             <true/>
             <key>destination</key>
             <string>export</string>
-            <key>thinning</key>
-            <string>none</string>
             <key>provisioningProfiles</key>
             <dict>
               <key>com.notifyvisitors.rn.nvrnsdkliveaccounttestapp</key>
