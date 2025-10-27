@@ -215,6 +215,7 @@ jobs:
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="Apple Distribution" \
             PROVISIONING_PROFILE_SPECIFIER="${PROFILE_APP_NAME}" \
+            PROVISIONING_PROFILE_SPECIFIER[NVRNPushServiceExt]="${PROFILE_EXT_NAME}" \
             -allowProvisioningUpdates \
             archive 
             
