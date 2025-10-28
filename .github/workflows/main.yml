@@ -106,12 +106,32 @@ jobs:
         run: |
           set -e
           KEYCHAIN_NAME=build.keychain
-          security create-keychain -p "" "$KEYCHAIN_NAME"
-          security import ios/certs/appleDistribution.p12 -k ~/Library/Keychains/$KEYCHAIN_NAME -P "$CERT_PASSWORD" -T /usr/bin/codesign
-          security list-keychains -s ~/Library/Keychains/$KEYCHAIN_NAME
-          security default-keychain -s ~/Library/Keychains/$KEYCHAIN_NAME
-          security unlock-keychain -p "" ~/Library/Keychains/$KEYCHAIN_NAME
-          security set-key-partition-list -S apple-tool:,apple: -s -k "" ~/Library/Keychains/$KEYCHAIN_NAME
+          KEYCHAIN_PASSWORD=$CERT_PASSWORD  # reuse your cert password safely
+          
+          # Create keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
+          
+          # Prevent auto-lock during CI
+          security set-keychain-settings -lut 3600 "$KEYCHAIN_NAME"
+          
+          # Add keychain to search list and make default
+          security list-keychains -s "$KEYCHAIN_NAME"
+          security default-keychain -s "$KEYCHAIN_NAME"
+          
+          # Unlock keychain
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
+          
+          # Import certificate (.p12)
+          security import ios/certs/appleDistribution.p12 \
+            -k "$KEYCHAIN_NAME" \
+            -P "$CERT_PASSWORD" \
+            -T /usr/bin/codesign
+          
+          # Allow codesign to access
+          security set-key-partition-list -S apple-tool:,apple: -s \
+            -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
+
+
       # -------------------------
       # 7️⃣ Install Provisioning Profiles
       # -------------------------
@@ -120,6 +140,9 @@ jobs:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp ios/certs/main_Target_release.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
           cp ios/certs/ext_Target_release.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+
+          echo "Installed provisioning profiles:"
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles || true
       # -------------------------
       # 8️⃣ Bundle React Native JS
       # -------------------------
