@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-ios:
-    name: Build iOS Release (Signed - AdHoc)
+    name: Build iOS ad_hoc (Signed - AdHoc)
     runs-on: macos-latest
     env:
       # RN / CI flags
@@ -95,8 +95,8 @@ jobs:
           set -e
           mkdir -p ios/certs
           openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/appleDistribution.p12.enc -out ios/certs/appleDistribution.p12 -d
-          openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/main_Target_release.mobileprovision.enc -out ios/certs/main_Target_release.mobileprovision -d
-          openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/ext_Target_release.mobileprovision.enc -out ios/certs/ext_Target_release.mobileprovision -d
+          openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/main_Target_ad_hoc.mobileprovision.enc -out ios/certs/main_Target_ad_hoc.mobileprovision -d
+          openssl aes-256-cbc -k "$CERT_PASSWORD" -in pf_ios/ext_Target_ad_hoc.mobileprovision.enc -out ios/certs/ext_Target_ad_hoc.mobileprovision -d
       # -------------------------
       # 6️⃣ Keychain & certificate
       # -------------------------
@@ -138,8 +138,8 @@ jobs:
       - name: 📄 Install Provisioning Profiles
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp ios/certs/main_Target_release.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-          cp ios/certs/ext_Target_release.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          cp ios/certs/main_Target_ad_hoc.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          cp ios/certs/ext_Target_ad_hoc.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
           echo "Installed provisioning profiles:"
           ls -la ~/Library/MobileDevice/Provisioning\ Profiles || true
@@ -172,10 +172,10 @@ jobs:
         env:
           APP_SCHEME: nvRNSDKLiveAccountTestApp
           WORKSPACE: nvRNSDKLiveAccountTestApp.xcworkspace
-          CONFIGURATION: Release
+          CONFIGURATION: ad_hoc
           DEVELOPMENT_TEAM: 4JW4924F8P
-          PROFILE_APP_NAME: "nvRNLiveAcTestAppMainTargetReleaseDistribProfile"
-          PROFILE_EXT_NAME: "nvRNLiveAcTestAppServicExtTargetReleaseDistProfile"
+          PROFILE_APP_NAME: "nvRNLiveAcTestAppMainTargetad_hocDistribProfile"
+          PROFILE_EXT_NAME: "nvRNLiveAcTestAppServicExtTargetad_hocDistProfile"
         run: |
           set -e
           cd ios
@@ -193,7 +193,7 @@ jobs:
           <plist version="1.0">
           <dict>
             <key>method</key>
-            <string>app-store</string>
+            <string>ad-hog</string>
             <key>teamID</key>
             <string>4JW4924F8P</string>
             <key>signingStyle</key>
@@ -240,8 +240,8 @@ jobs:
           ARCHIVE_PATH="$PWD/build/${APP_SCHEME}.xcarchive"
 
           # Export target-specific provisioning overrides
-          export PROVISIONING_PROFILE_SPECIFIER_nvRNSDKLiveAccountTestApp="nvRNLiveAcTestAppMainTargetReleaseDistribProfile"
-          export PROVISIONING_PROFILE_SPECIFIER_NVRNPushServiceExt="nvRNLiveAcTestAppServicExtTargetReleaseDistProfile"
+          export PROVISIONING_PROFILE_SPECIFIER_nvRNSDKLiveAccountTestApp="nvRNLiveAcTestAppMainTargetad_hocDistribProfile"
+          export PROVISIONING_PROFILE_SPECIFIER_NVRNPushServiceExt="nvRNLiveAcTestAppServicExtTargetad_hocDistProfile"
           export CODE_SIGNING_ALLOWED=NO
           export CODE_SIGNING_REQUIRED=NO
 
@@ -277,5 +277,5 @@ jobs:
       - name: ☁️ Upload iOS IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release-ios
+          name: app-ad_hoc-ios
           path: ios/build/*.ipa
