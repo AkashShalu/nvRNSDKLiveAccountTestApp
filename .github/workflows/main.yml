@@ -174,8 +174,8 @@ jobs:
           WORKSPACE: nvRNSDKLiveAccountTestApp.xcworkspace
           CONFIGURATION: ad_hoc
           DEVELOPMENT_TEAM: 4JW4924F8P
-          PROFILE_APP_NAME: "nvRNLiveAcTestAppMainTargetad_hocDistribProfile"
-          PROFILE_EXT_NAME: "nvRNLiveAcTestAppServicExtTargetad_hocDistProfile"
+          PROFILE_APP_NAME: "nvRNLiveAcTestAppMainTargetAdHocDistribProfile"
+          PROFILE_EXT_NAME: "nvRNLiveAcTestAppServExtTargetAdHocDistribProfile"
         run: |
           set -e
           cd ios
@@ -240,8 +240,8 @@ jobs:
           ARCHIVE_PATH="$PWD/build/${APP_SCHEME}.xcarchive"
 
           # Export target-specific provisioning overrides
-          export PROVISIONING_PROFILE_SPECIFIER_nvRNSDKLiveAccountTestApp="nvRNLiveAcTestAppMainTargetad_hocDistribProfile"
-          export PROVISIONING_PROFILE_SPECIFIER_NVRNPushServiceExt="nvRNLiveAcTestAppServicExtTargetad_hocDistProfile"
+          export PROVISIONING_PROFILE_SPECIFIER_nvRNSDKLiveAccountTestApp="nvRNLiveAcTestAppMainTargetAdHocDistribProfile"
+          export PROVISIONING_PROFILE_SPECIFIER_NVRNPushServiceExt="nvRNLiveAcTestAppServExtTargetAdHocDistribProfile"
           export CODE_SIGNING_ALLOWED=NO
           export CODE_SIGNING_REQUIRED=NO
 
