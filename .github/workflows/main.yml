@@ -209,19 +209,11 @@ jobs:
           echo "📦 Archiving app (Signed with both profiles)"
           ARCHIVE_PATH="$PWD/build/${APP_SCHEME}.xcarchive"
 
-          echo "🚫 Disabling [CP] Embed Pods Frameworks phase"
-          plutil -replace runOnlyForDeploymentPostprocessing -bool true "nvRNSDKLiveAccountTestApp.xcodeproj/project.pbxproj"
-      
-          echo "🧾 Unlocking keychain again"
-          security unlock-keychain -p "" ~/Library/Keychains/build.keychain
-          security set-keychain-settings -lut 7200 ~/Library/Keychains/build.keychain
-
           # Export target-specific provisioning overrides
           export PROVISIONING_PROFILE_SPECIFIER_nvRNSDKLiveAccountTestApp="nvRNLiveAcTestAppMainTargetReleaseDistribProfile"
           export PROVISIONING_PROFILE_SPECIFIER_NVRNPushServiceExt="nvRNLiveAcTestAppServicExtTargetReleaseDistProfile"
           export CODE_SIGNING_ALLOWED="NO"
 
-          
 
           xcodebuild -workspace "$WORKSPACE" \
             -scheme "$APP_SCHEME" \
