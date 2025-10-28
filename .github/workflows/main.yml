@@ -77,6 +77,8 @@ jobs:
           
           echo "🧩 Fixing Hermes script permissions..."
           find Pods -type f -name "Script-*.sh" -exec chmod +x {} \;
+          chmod +x Pods/Target\ Support\ Files/Pods-*/Pods-*-frameworks.sh || true
+          chmod +x Pods/Target\ Support\ Files/Pods-*/Pods-*-resources.sh || true
 
           # CI-safe: Disable dependency analysis for RN bundle phase
           sed -i '' 's/"basedOnDependencyAnalysis" = YES;/"basedOnDependencyAnalysis" = NO;/g' nvRNSDKLiveAccountTestApp.xcodeproj/project.pbxproj
@@ -217,8 +219,8 @@ jobs:
           # Export target-specific provisioning overrides
           export PROVISIONING_PROFILE_SPECIFIER_nvRNSDKLiveAccountTestApp="nvRNLiveAcTestAppMainTargetReleaseDistribProfile"
           export PROVISIONING_PROFILE_SPECIFIER_NVRNPushServiceExt="nvRNLiveAcTestAppServicExtTargetReleaseDistProfile"
-          export CODE_SIGNING_ALLOWED="NO"
-
+          export CODE_SIGNING_ALLOWED=NO
+          export CODE_SIGNING_REQUIRED=NO
 
           xcodebuild -workspace "$WORKSPACE" \
             -scheme "$APP_SCHEME" \
