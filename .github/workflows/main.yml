@@ -135,6 +135,11 @@ jobs:
       - name: 💎 Install xcpretty
         run: gem install xcpretty
 
+      - name: Fix CocoaPods script permissions
+        run: |
+          chmod +x ios/Pods/Target\ Support\ Files/Pods-*/Pods-*-frameworks.sh
+          chmod +x ios/Pods/Target\ Support\ Files/Pods-*/Pods-*-resources.sh
+
       # -------------------------
       # 🔟 Build & Archive iOS App
       # -------------------------
