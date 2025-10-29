@@ -2,9 +2,9 @@ name: 🚀 Build React Native iOS (AdHoc Signed & Upload IPA)
 
 on:
   push:
-    branches: [main]
+    branches: [stage]
   pull_request:
-    branches: [main]
+    branches: [stage]
 
 jobs:
   build-ios:
