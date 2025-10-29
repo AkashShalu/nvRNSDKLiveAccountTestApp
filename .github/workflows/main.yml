@@ -155,7 +155,7 @@ jobs:
           xcodebuild clean -workspace "$WORKSPACE" -scheme "$APP_SCHEME" -configuration "$CONFIGURATION"
 
           echo "📥 Copying and Generating ExportOptions.plist from pf_ios..."
-          cp ../pf_ios/ExportOptions_adhoc.plist ExportOptions.plist
+          cp ../pf_ios/ExportOptions.plist ExportOptions.plist
 
           echo "📦 Archiving app..."
           ARCHIVE_PATH="$PWD/build/${APP_SCHEME}.xcarchive"
