@@ -15,21 +15,6 @@ on:
       - 'babel.config.js'
       - 'tsconfig.json'
       - '.github/workflows/ios.yml'
-  
-  pull_request:
-    branches: [ main ]
-    paths:
-      - 'ios/**'
-      - 'pf_ios/**'
-      - 'src/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'app.json'
-      - 'index.js'
-      - 'App.tsx'
-      - 'babel.config.js'
-      - 'tsconfig.json'
-      - '.github/workflows/ios.yml'
 
 jobs:
   build-ios:
