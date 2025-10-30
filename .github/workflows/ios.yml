@@ -2,7 +2,7 @@ name: iOS CI - Build
 
 on:
   push:
-    branches: [ stage ]
+    branches: [ main ]
     paths:
       - 'ios/**'
       - 'pf_ios/**'
@@ -17,7 +17,7 @@ on:
       - '.github/workflows/ios.yml'
   
   pull_request:
-    branches: [ stage ]
+    branches: [ main ]
     paths:
       - 'ios/**'
       - 'pf_ios/**'
