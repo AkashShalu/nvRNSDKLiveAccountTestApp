@@ -87,9 +87,9 @@ jobs:
       - name: 📦 Install JS Dependencies
         run: npm ci --legacy-peer-deps
 
-      # -------------------------
+      # ----------------------------
       # 5️⃣ Prepare iOS Dependencies
-      # -------------------------
+      # ----------------------------
       - name: 🧰 Prepare iOS Dependencies (Pods & Fixes)
         run: |
           echo "🧹 Cleaning old builds..."
