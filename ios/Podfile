@@ -41,7 +41,7 @@ target 'nvRNSDKLiveAccountTestApp' do
         config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
         #  config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = "NO"
         # ✅ Disable code signing for CI builds to prevent hang
-        if ENV['CI'] == "true"
+        if ENV['CI'] == "true" 
           config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
           config.build_settings['CODE_SIGNING_REQUIRED'] = 'NO'
           config.build_settings['EXPANDED_CODE_SIGN_IDENTITY'] = ''
