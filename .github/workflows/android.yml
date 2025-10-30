@@ -1,4 +1,4 @@
-name: Android CI - Build Debug APK
+name: Android CI - Build Optimized Debug APK
 
 on:
   push:
@@ -20,7 +20,7 @@ on:
 
 jobs:
   build-android-debug:
-    name: Build Debug APK
+    name: Build Optimized Debug APK
     runs-on: ubuntu-latest
 
     steps:
@@ -38,6 +38,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
 
       # -------------------------
       # 3️⃣ Install Dependencies
@@ -77,8 +78,22 @@ jobs:
             ${{ runner.os }}-gradle-
 
       # -------------------------
-      # 7️⃣ Bundle React Native JS
-      # (Fix "Unable to load script" issue)
+      # 7️⃣ Enable Gradle Build Cache
+      # -------------------------
+      - name: Enable Gradle Build Cache
+        run: echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
+
+      # -------------------------
+      # 8️⃣ Force Hermes Enabled (smaller JS engine)
+      # -------------------------
+      - name: Enable Hermes Runtime
+        run: |
+          if ! grep -q "enableHermes" android/app/build.gradle; then
+            echo "project.ext.react = [ enableHermes: true ]" >> android/app/build.gradle
+          fi
+
+      # -------------------------
+      # 9️⃣ Bundle React Native JS
       # -------------------------
       - name: Bundle React Native JS
         run: |
@@ -91,19 +106,42 @@ jobs:
             --assets-dest android/app/src/main/res/
 
       # -------------------------
-      # 8️⃣ Build Debug APK
+      # 🔟 Build Debug APK (Split by ABI)
       # -------------------------
-      - name: Build Debug APK
+      - name: Build Optimized APK (Split by ABI)
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew clean assembleDebug --no-daemon --warning-mode all
+          ./gradlew clean assembleDebug \
+            -PreactNativeArchitectures=armeabi-v7a,arm64-v8a,x86_64 \
+            -PsplitApkByAbi=true \
+            --no-daemon --parallel --build-cache --warning-mode all
 
       # -------------------------
-      # 9️⃣ Upload Debug APK Artifact
+      # 11️⃣ Strip native debug symbols
+      # -------------------------
+      - name: Strip native .so files
+        run: |
+          find android/app/build/outputs/apk/debug -name "*.so" -exec strip --strip-unneeded {} \; || true
+
+      # -------------------------
+      # 12️⃣ Remove unnecessary bundle map files
+      # -------------------------
+      - name: Clean up bundle map files
+        run: |
+          rm -f android/app/src/main/assets/index.android.bundle.map || true
+
+      # -------------------------
+      # 13️⃣ Show APK Path
+      # -------------------------
+      - name: Show APK path
+        run: ls -lh android/app/build/outputs/apk/debug/
+
+      # -------------------------
+      # 14️⃣ Upload Debug APK Artifact
       # -------------------------
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: app-debug-split
+          path: android/app/build/outputs/apk/debug/*.apk
