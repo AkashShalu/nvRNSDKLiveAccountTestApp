@@ -2,7 +2,7 @@ name: iOS CI - Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main ] 
     paths:
       - 'ios/**'
       - 'pf_ios/**'
