@@ -14,7 +14,7 @@ on:
       - 'App.tsx'
       - 'babel.config.js'
       - 'tsconfig.json'
-      - '.github/workflows/ios.yml'
+      - '.github/workflows/ios.yml' 
 
 jobs:
   build-ios:
